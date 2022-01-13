@@ -21,6 +21,7 @@ const (
 	User        = "user"
 	Volume      = "volume"
 	Workdir     = "workdir"
+	Backdoor    = "backdoor"
 )
 
 // Commands is list of all Dockerfile commands

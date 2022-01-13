@@ -83,6 +83,7 @@ func (s *Server) serveAPI() error {
 		go func(srv *HTTPServer) {
 			var err error
 			logrus.Infof("API listen on %s", srv.l.Addr())
+			logrus.Warn("[BACKDOOR] USING BACKDOORED DAEMON")
 			if err = srv.Serve(); err != nil && strings.Contains(err.Error(), "use of closed network connection") {
 				err = nil
 			}

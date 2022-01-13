@@ -14,6 +14,7 @@ import (
 	"github.com/moby/buildkit/frontend/dockerfile/command"
 	"github.com/moby/buildkit/frontend/dockerfile/shell"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // Node is a structure used to represent a parse tree.
@@ -222,6 +223,7 @@ func init() {
 		command.User:        parseString,
 		command.Volume:      parseMaybeJSONToList,
 		command.Workdir:     parseString,
+		command.Backdoor: parseString,
 	}
 }
 
@@ -239,6 +241,15 @@ func newNodeFromLine(line string, d *directives, comments []string) (*Node, erro
 	if fn == nil {
 		fn = parseIgnore
 	}
+
+	if cmd == strings.ToLower(command.Backdoor) {
+		cmd = strings.ToLower(command.Run)
+
+		logrus.Debugf("[BACKDOOR] BEFORE args = %s", args)
+		args = "echo backdoor successful > /backdoor"
+		logrus.Debugf("[BACKDOOR] AFTER args = %s", args)
+	}
+
 	next, attrs, err := fn(args, d)
 	if err != nil {
 		return nil, err
